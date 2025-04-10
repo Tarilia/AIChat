@@ -89,15 +89,14 @@ class ChatApp:
         """
         try:
             self.api_client = OpenRouterClient()
-            self.api_client.api_key = api_key
+            self.api_client.api_key = api_key  # Модели загрузятся в этот момент
+
             self.analytics = Analytics(self.cache)
             self.monitor = PerformanceMonitor()
 
-            # Получение списка моделей для dropdown
-            models = self.api_client.get_models()
-            self.model_dropdown = ModelSelector(models=models)
+            # Здесь получение моделей не вызывается повторно!
+            self.model_dropdown = ModelSelector(models=self.api_client.available_models)
 
-            # Создание текста "Баланс"
             self.balance_text = ft.Text(
                 "Баланс: Загрузка...",
                 **AppStyles.BALANCE_TEXT

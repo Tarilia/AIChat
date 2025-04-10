@@ -30,28 +30,34 @@ class AppLogger:
         current_date = datetime.now().strftime("%Y-%m-%d")
         log_file = os.path.join(self.logs_dir, f"chat_app_{current_date}.log")
 
-        # Настройка формата сообщений
+        # Форматирование сообщений
         formatter = logging.Formatter(
             '%(asctime)s - %(levelname)s - %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S'
         )
 
-        # Обработчик для записи логов в файл
-        file_handler = logging.FileHandler(
-            log_file,
-            encoding='utf-8'  # Кодировка для поддержки Unicode
-        )
-        file_handler.setFormatter(formatter)
-
-        # Обработчик для вывода логов в консоль
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(formatter)
-
-        # Создание основного логгера приложения
+        # Получаем логгер приложения с именем 'ChatApp'
         self.logger = logging.getLogger('ChatApp')
-        self.logger.setLevel(logging.DEBUG)  # Уровень логирования (все сообщения)
-        self.logger.addHandler(file_handler)  # Добавление вывода в файл
-        self.logger.addHandler(console_handler)  # Добавление вывода в консоль
+
+        # Проверка, есть ли уже установленные обработчики (чтобы избежать дублирования)
+        if not self.logger.hasHandlers():
+            # Устанавливаем уровень логирования
+            self.logger.setLevel(logging.DEBUG)
+
+            # Обработчик для записи логов в файл
+            file_handler = logging.FileHandler(
+                log_file,  # Указываем путь к файлу
+                encoding='utf-8'  # Кодировка для поддержки Unicode
+            )
+            file_handler.setFormatter(formatter)
+
+            # Обработчик для вывода логов в консоль
+            console_handler = logging.StreamHandler()
+            console_handler.setFormatter(formatter)
+
+            # Добавляем обработчики к логгеру
+            self.logger.addHandler(file_handler)
+            self.logger.addHandler(console_handler)  # Вывод в консоль
 
     def info(self, message: str):
         """
